@@ -200,4 +200,4 @@ def view_log():
     return render_template('view_log.html', daily_logs=daily_logs)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
