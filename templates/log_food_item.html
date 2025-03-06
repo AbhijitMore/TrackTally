@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Food Item</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #unit {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Log Food Item</h1>
+
+    <form method="POST">
+        <label for="food_item">Select Food Item:</label>
+        <select name="food_item" id="food_item" required>
+            <option value="">Select a Food Item</option>
+            {% for item in food_items %}
+                <option value="{{ item.id }}" data-unit="{{ item.unit }}">{{ item.food_item }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="quantity_consumed">Quantity Consumed:</label>
+        <input type="text" id="quantity_consumed" name="quantity_consumed" required placeholder="Enter quantity consumed (e.g., 100, 1, etc.)">
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="unit" id="unit_label" style="display: none;">Unit:</label>
+        <input type="text" id="unit" name="unit" readonly style="display: none; background-color: #f9f9f9; cursor: not-allowed;">
+
+        <button type="submit">Log Food Item</button>
+    </form>
+
+    <script>
+        document.getElementById('food_item').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var unit = selectedOption.getAttribute('data-unit');
+            var unitField = document.getElementById('unit');
+            var unitLabel = document.getElementById('unit_label');
+
+            if (unit) {
+                unitField.style.display = 'inline';
+                unitLabel.style.display = 'block';
+                unitField.value = unit;
+            } else {
+                unitField.style.display = 'none';
+                unitLabel.style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+</html>

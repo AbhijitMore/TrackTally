@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Calorie Counter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Welcome to the Daily Calorie Counter</h1>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('add_food_item') }}">Add Food Item</a></li>
+            <li><a href="{{ url_for('log_food_item') }}">Log Food Consumption</a></li>
+            <li><a href="{{ url_for('view_log') }}">View Log</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

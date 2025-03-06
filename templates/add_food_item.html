@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Food Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Add Food Item</h1>
+    <form method="POST">
+        <label for="food_item">Food Item:</label>
+        <input type="text" name="food_item" required><br>
+
+        <label for="quantity">Quantity:</label>
+        <input type="text" name="quantity" required><br>
+
+        <label for="unit">Unit:</label>
+        <input type="text" name="unit" required><br>
+
+        <label for="protein">Protein (g):</label>
+        <input type="text" name="protein" required><br>
+
+        <label for="sugars">Sugars (g):</label>
+        <input type="text" name="sugars" required><br>
+
+        <label for="fats">Fats (g):</label>
+        <input type="text" name="fats" required><br>
+
+        <label for="carbs">Carbs (g):</label>
+        <input type="text" name="carbs" required><br>
+
+        <label for="kcal">Calories (kcal):</label>
+        <input type="text" name="kcal" required><br>
+
+        <button type="submit">Add Food Item</button>
+    </form>
+</body>
+</html>
