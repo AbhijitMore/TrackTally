@@ -5,15 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Calorie Counter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #f4f4f4, #e0f7fa);
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #00796b;
+            margin-bottom: 30px;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background-color: #fff;
+            width: 280px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            background-color: #ffeb3b;  /* Bright yellow background on hover */
+        }
+
+        .card a {
+            text-decoration: none;
+            color: #00796b;  /* Set a contrasting color for text */
+        }
+
+        .card h2 {
+            font-size: 24px;
+            color: #00796b;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .card a:hover h2 {
+            color: #d32f2f;  /* Change text color to red on hover */
+        }
+
+        /* Additional color accents for the cards */
+        .card:nth-child(1) {
+            background-color: #c8e6c9;  /* Light green */
+        }
+
+        .card:nth-child(2) {
+            background-color: #ffcc80;  /* Light orange */
+        }
+
+        .card:nth-child(3) {
+            background-color: #81d4fa;  /* Light blue */
+        }
+
+        .card:nth-child(1):hover {
+            background-color: #66bb6a;  /* Darker green on hover */
+        }
+
+        .card:nth-child(2):hover {
+            background-color: #ff7043;  /* Darker orange on hover */
+        }
+
+        .card:nth-child(3):hover {
+            background-color: #039be5;  /* Darker blue on hover */
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome to the Daily Calorie Counter</h1>
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('add_food_item') }}">Add Food Item</a></li>
-            <li><a href="{{ url_for('log_food_item') }}">Log Food Consumption</a></li>
-            <li><a href="{{ url_for('view_log') }}">View Log</a></li>
-        </ul>
-    </nav>
+    <div class="cards-container">
+        <div class="card">
+            <a href="{{ url_for('add_food_item') }}">
+                <h2>Add Food Item</h2>
+                <p>Click to add a new food item to the tracker.</p>
+            </a>
+        </div>
+        <div class="card">
+            <a href="{{ url_for('log_food_item') }}">
+                <h2>Log Food Consumption</h2>
+                <p>Track what you've eaten throughout the day.</p>
+            </a>
+        </div>
+        <div class="card">
+            <a href="{{ url_for('view_log') }}">
+                <h2>View Log</h2>
+                <p>Review your daily food log and calorie intake.</p>
+            </a>
+        </div>
+    </div>
 </body>
 </html>

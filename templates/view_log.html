@@ -6,44 +6,154 @@
     <title>View Log</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        padding: 40px;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 3em;
+        color: #4caf50;
+        margin-bottom: 40px;
+        text-transform: uppercase;
+    }
+
+    .day-log {
+        margin-bottom: 50px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 2em;
+        color: #00796b;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+    }
+
+    th {
+        padding: 14px 16px;
+        background-color: #039be5;
+        color: white;
+        text-align: left;
+        font-size: 1.1em;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    td {
+        padding: 12px 16px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        font-size: 1em;
+        color: #555;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #e3f2fd;
+    }
+
+    td a {
+        text-decoration: none;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 4px;
+        color: #4caf50;
+        transition: background-color 0.3s ease;
+    }
+
+    td a#delete {
+        color: #d32f2f;
+    }
+
+    td a:hover {
+        background-color: #e8f5e8;
+    }
+
+    td a#delete:hover {
+        background-color: #ffebee;
+    }
+
+    h3 {
+        font-size: 1.3em;
+        color: #555;
+        margin-top: 20px;
+        text-align: left;
+    }
+
+    .totals {
+        font-weight: bold;
+        color: #00796b;
+        background-color: #e0f2f1;
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+</style>
 <body>
     <h1>Daily Food Consumption Log</h1>
 
     {% for day_log in daily_logs %}
-        <h2>{{ day_log.date }}</h2> <!-- Display the date of the log entry -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Food Item</th>
-                    <th>Quantity</th>
-                    <th>Protein (g)</th>
-                    <th>Sugars (g)</th>
-                    <th>Fats (g)</th>
-                    <th>Carbs (g)</th>
-                    <th>Total Calories</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for log in day_log.logs %}
+        <div class="day-log">
+            <h2>{{ day_log.date }}</h2>
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ log.food_item.food_item }}</td>
-                        <td>{{ log.quantity_consumed }}</td>
-                        <td>{{ log.protein_consumed }}</td>
-                        <td>{{ log.sugars_consumed }}</td>
-                        <td>{{ log.fats_consumed }}</td>
-                        <td>{{ log.carbs_consumed }}</td>
-                        <td>{{ log.total_calories }}</td>
-                        <td>
-                            <a href="{{ url_for('edit_log', log_id=log.id) }}">Edit</a> |
-                            <a href="{{ url_for('delete_log', log_id=log.id) }}" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
-                        </td>
+                        <th>Food Item</th>
+                        <th>Quantity</th>
+                        <th>Protein (g)</th>
+                        <th>Sugars (g)</th>
+                        <th>Fats (g)</th>
+                        <th>Carbs (g)</th>
+                        <th>Total Calories</th>
+                        <th>Actions</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <h3>Total Calories for {{ day_log.date }}: {{ day_log.total_calories }}</h3>
-        <h3>Total Protein for {{ day_log.date }}: {{ day_log.total_protein }}</h3>
+                </thead>
+                <tbody>
+                    {% for log in day_log.logs %}
+                        <tr>
+                            <td>{{ log.food_item.food_item }}</td>
+                            <td>{{ log.quantity_consumed }}</td>
+                            <td>{{ log.protein_consumed }}</td>
+                            <td>{{ log.sugars_consumed }}</td>
+                            <td>{{ log.fats_consumed }}</td>
+                            <td>{{ log.carbs_consumed }}</td>
+                            <td>{{ log.total_calories }}</td>
+                            <td>
+                                <a href="{{ url_for('edit_log', log_id=log.id) }}">Edit</a> |
+                                <a id="delete" href="{{ url_for('delete_log', log_id=log.id) }}" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="totals">
+                <h3>Total Calories for {{ day_log.date }}: {{ day_log.total_calories }}</h3>
+                <h3>Total Protein for {{ day_log.date }}: {{ day_log.total_protein }}</h3>
+            </div>
+        </div>
     {% endfor %}
     
 </body>

@@ -90,7 +90,7 @@ def add_food_item():
         carbs = float(request.form['carbs'])
         kcal = float(request.form['kcal'])
 
-        new_food_item = FoodItem(food_item=food_item, quantity=quantity, unit=unit, protein=protein, sugars=sugars, fats=fats, carbs=carbs, kcal=kcal)
+        new_food_item = FoodItem(food_item=food_item, quantity=quantity, unit=unit, protein=protein, sugars=sugars, fats=fats, carbs=carbs, kcal=kcal) # type: ignore
         db.session.add(new_food_item)
         db.session.commit()
 
@@ -127,14 +127,14 @@ def log_food_item():
         total_calories = selected_food_item.kcal * quantity_ratio
 
         new_log = DailyLog(
-            food_item_id=food_item_id,
-            quantity_consumed=quantity_consumed,
-            date=date_obj,
-            protein_consumed=protein_consumed,
-            sugars_consumed=sugars_consumed,
-            fats_consumed=fats_consumed,
-            carbs_consumed=carbs_consumed,
-            total_calories=total_calories
+            food_item_id=food_item_id, # type: ignore
+            quantity_consumed=quantity_consumed,# type: ignore
+            date=date_obj,# type: ignore
+            protein_consumed=protein_consumed,# type: ignore
+            sugars_consumed=sugars_consumed,# type: ignore
+            fats_consumed=fats_consumed,# type: ignore
+            carbs_consumed=carbs_consumed,# type: ignore
+            total_calories=total_calories# type: ignore
         )
         db.session.add(new_log)
         db.session.commit()

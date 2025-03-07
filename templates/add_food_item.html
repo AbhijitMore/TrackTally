@@ -6,34 +6,174 @@
     <title>Add Food Item</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 0;
+        color: #444;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #4CAF50;
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    label {
+        font-size: 1.15rem;
+        color: #555;
+        margin-bottom: 8px;
+        display: block;
+        font-weight: 500;
+    }
+
+    input {
+        width: 100%;
+        padding: 14px 20px;
+        margin-top: 8px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        font-size: 1rem;
+        color: #555;
+        transition: all 0.3s ease;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #4CAF50;
+        background-color: #fff;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 25px;
+    }
+
+    .submit-btn:hover {
+        background-color: #45a049;
+    }
+
+    .submit-btn:active {
+        transform: scale(0.98);
+    }
+
+    input::placeholder {
+        color: #aaa;
+        font-style: italic;
+    }
+
+    @media screen and (max-width: 768px) {
+        .container {
+            padding: 30px;
+            width: 85%;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+        }
+
+        .submit-btn {
+            font-size: 1.1rem;
+            padding: 14px;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .container {
+            padding: 20px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+        }
+
+        .submit-btn {
+            font-size: 1rem;
+            padding: 12px;
+        }
+    }
+
+</style>
 <body>
-    <h1>Add Food Item</h1>
-    <form method="POST">
-        <label for="food_item">Food Item:</label>
-        <input type="text" name="food_item" required><br>
+    <div class="container">
+        <h1>Add Food Item</h1>
+        <form method="POST">
+            <div class="form-group">
+                <label for="food_item">Food Item:</label>
+                <input type="text" name="food_item" required placeholder="Enter food item name">
+            </div>
 
-        <label for="quantity">Quantity:</label>
-        <input type="text" name="quantity" required><br>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="text" name="quantity" required placeholder="Enter quantity (e.g., 100g)">
+            </div>
 
-        <label for="unit">Unit:</label>
-        <input type="text" name="unit" required><br>
+            <div class="form-group">
+                <label for="unit">Unit:</label>
+                <input type="text" name="unit" required placeholder="Enter unit (e.g., grams)">
+            </div>
 
-        <label for="protein">Protein (g):</label>
-        <input type="text" name="protein" required><br>
+            <div class="form-group">
+                <label for="protein">Protein (g):</label>
+                <input type="text" name="protein" required placeholder="Enter protein content">
+            </div>
 
-        <label for="sugars">Sugars (g):</label>
-        <input type="text" name="sugars" required><br>
+            <div class="form-group">
+                <label for="sugars">Sugars (g):</label>
+                <input type="text" name="sugars" required placeholder="Enter sugar content">
+            </div>
 
-        <label for="fats">Fats (g):</label>
-        <input type="text" name="fats" required><br>
+            <div class="form-group">
+                <label for="fats">Fats (g):</label>
+                <input type="text" name="fats" required placeholder="Enter fats content">
+            </div>
 
-        <label for="carbs">Carbs (g):</label>
-        <input type="text" name="carbs" required><br>
+            <div class="form-group">
+                <label for="carbs">Carbs (g):</label>
+                <input type="text" name="carbs" required placeholder="Enter carbohydrate content">
+            </div>
 
-        <label for="kcal">Calories (kcal):</label>
-        <input type="text" name="kcal" required><br>
+            <div class="form-group">
+                <label for="kcal">Calories (kcal):</label>
+                <input type="text" name="kcal" required placeholder="Enter calories">
+            </div>
 
-        <button type="submit">Add Food Item</button>
-    </form>
+            <button type="submit" class="submit-btn">Add Food Item</button>
+        </form>
+    </div>
 </body>
 </html>

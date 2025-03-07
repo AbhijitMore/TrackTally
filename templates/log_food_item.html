@@ -6,45 +6,119 @@
     <title>Log Food Item</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            padding: 0;
+            margin: 0;
+            color: #333;
         }
+
         h1 {
             text-align: center;
+            font-size: 2.5em;
+            color: #333;
+            margin-top: 40px;
+            text-transform: uppercase;
         }
+
         form {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
         }
+
+        form:hover {
+            transform: translateY(-5px);
+        }
+
         label {
             display: block;
-            margin: 10px 0 5px;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: bold;
         }
+
         input, select {
             width: 100%;
-            padding: 8px;
-            margin: 5px 0 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+            font-size: 1em;
+            color: #555;
+            transition: border-color 0.3s ease;
         }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ff7043;
+            background-color: #fff;
+        }
+
         button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            width: 100%;
+            padding: 15px;
+            background-color: #ffcc80;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-size: 1.2em;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
         button:hover {
-            background-color: #45a049;
+            background-color: #ff7045;
         }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
         #unit {
             display: none;
+            padding: 12px;
+            margin-top: 10px;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            color: #333;
+        }
+
+        #unit_label {
+            display: none;
+            font-size: 1em;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Responsive design */
+        @media screen and (max-width: 600px) {
+            form {
+                padding: 20px;
+                width: 90%;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            button {
+                font-size: 1.1em;
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -53,27 +127,39 @@
     <h1>Log Food Item</h1>
 
     <form method="POST">
-        <label for="food_item">Select Food Item:</label>
-        <select name="food_item" id="food_item" required>
-            <option value="">Select a Food Item</option>
-            {% for item in food_items %}
-                <option value="{{ item.id }}" data-unit="{{ item.unit }}">{{ item.food_item }}</option>
-            {% endfor %}
-        </select>
+        <div class="form-group">
+            <label for="food_item">Select Food Item:</label>
+            <select name="food_item" id="food_item" required>
+                <option value="">Select a Food Item</option>
+                {% for item in food_items %}
+                    <option value="{{ item.id }}" data-unit="{{ item.unit }}">{{ item.food_item }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <label for="quantity_consumed">Quantity Consumed:</label>
-        <input type="text" id="quantity_consumed" name="quantity_consumed" required placeholder="Enter quantity consumed (e.g., 100, 1, etc.)">
+        <div class="form-group">
+            <label for="quantity_consumed">Quantity Consumed:</label>
+            <input type="text" id="quantity_consumed" name="quantity_consumed" required placeholder="Enter quantity consumed (e.g., 100, 1, etc.)">
+        </div>
 
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+        </div>
 
-        <label for="unit" id="unit_label" style="display: none;">Unit:</label>
-        <input type="text" id="unit" name="unit" readonly style="display: none; background-color: #f9f9f9; cursor: not-allowed;">
+        <div class="form-group">
+            <label for="unit" id="unit_label">Unit:</label>
+            <input type="text" id="unit" name="unit" readonly>
+        </div>
 
         <button type="submit">Log Food Item</button>
     </form>
 
     <script>
+
+        // Set the default date to today's date in the input field
+        document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
         document.getElementById('food_item').addEventListener('change', function() {
             var selectedOption = this.options[this.selectedIndex];
             var unit = selectedOption.getAttribute('data-unit');
@@ -81,7 +167,7 @@
             var unitLabel = document.getElementById('unit_label');
 
             if (unit) {
-                unitField.style.display = 'inline';
+                unitField.style.display = 'block';
                 unitLabel.style.display = 'block';
                 unitField.value = unit;
             } else {
