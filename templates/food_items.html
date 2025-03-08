@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Items</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f7f7;
+            padding: 0;
+            margin: 0;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            color: #f8bbd0;
+            margin-top: 40px;
+            text-transform: uppercase;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            padding: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        th {
+            background-color: #ec407a;
+            color: white;
+            font-weight: bold;
+            padding: 15px;
+        }
+
+        td {
+            padding: 15px;
+            text-align: center;
+            background-color: #fafafa;
+            color: #555;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+
+        tr:hover {
+            background-color: #ffe0b2;
+        }
+
+        .table-bordered {
+            border: 1px solid #ddd;
+        }
+
+        .table-responsive {
+            margin-top: 30px;
+        }
+
+        .table th, .table td {
+            text-align: center;
+        }
+
+        /* Hover effect for the table rows */
+        tr:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Mobile responsive adjustments */
+        @media screen and (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            table {
+                width: 100%;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Food Items</h1>
+
+        <!-- Card Container -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Food Item</th>
+                                <th>Quantity</th>
+                                <th>Unit</th>
+                                <th>Protein (g)</th>
+                                <th>Sugars (g)</th>
+                                <th>Fats (g)</th>
+                                <th>Carbs (g)</th>
+                                <th>Calories (kcal)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for food_item in food_items %}
+                            <tr>
+                                <td>{{ food_item.food_item }}</td>
+                                <td>{{ food_item.quantity }}</td>
+                                <td>{{ food_item.unit }}</td>
+                                <td>{{ food_item.protein }}</td>
+                                <td>{{ food_item.sugars }}</td>
+                                <td>{{ food_item.fats }}</td>
+                                <td>{{ food_item.carbs }}</td>
+                                <td>{{ food_item.kcal }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

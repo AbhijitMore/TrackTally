@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Food Log</title>
+    <title>Edit Weight Log</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <style>
@@ -37,7 +37,7 @@
         font-size: 24px;
         text-align: center;
         margin-bottom: 20px;
-        color: #333;
+        color: #8a66c1;
     }
 
     /* Form container styling */
@@ -57,13 +57,23 @@
         outline: none;
     }
 
+    #date {
+        padding: 10px;
+        font-size: 16px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        outline: none;
+    }
+
     .input-field:focus {
-        border-color: #4CAF50;
+        border-color: #9370DB; /* Light purple focus border */
     }
 
     /* Button Style */
     .submit-btn {
-        background-color: #4CAF50;
+        background-color: #9370DB; /* Light purple button */
         color: white;
         font-size: 16px;
         padding: 12px 20px;
@@ -74,13 +84,13 @@
     }
 
     .submit-btn:hover {
-        background-color: #45a049;
+        background-color: #8a66c1; /* Slightly darker purple for hover */
     }
 
     /* Link Styling */
     .back-link {
         text-decoration: none;
-        color: #007bff;
+        color: #9370DB; /* Light purple link */
         font-size: 16px;
         text-align: center;
         display: block;
@@ -89,24 +99,41 @@
 
     .back-link:hover {
         text-decoration: underline;
-        color: #0056b3;
+        color: #8a66c1; /* Darker purple on hover */
     }
 
 </style>
 <body>
     <div class="container">
-        <h1>Edit Food Log Entry</h1>
-        <form method="POST" class="form-container">
-            <label for="food_item">Food Item:</label>
-            <input type="text" name="Food Item" value="{{ log.food_item.food_item }}" class="input-field" disabled>
-            
-            <label for="quantity_consumed">Amount Consumed (in grams or servings):</label>
-            <input type="text" name="quantity_consumed" value="{{ log.quantity_consumed }}" required class="input-field">
-            
+        <h1>Edit Weight Log Entry</h1>
+        <form action="{{ url_for('edit_weight', id=weight_log.id) }}" method="POST" class="form-container" id="editForm">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" value="{{ weight_log.date.strftime('%Y-%m-%d')}}" readonly>
+
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" step="any" name="weight" value="{{ weight_log.weight }}" required class="input-field">
+
             <button type="submit" class="submit-btn">Update Log</button>
         </form>
-        <br>
-        <a href="{{ url_for('view_log') }}" class="back-link">Back to My Food Log</a>
     </div>
+
+    <script>
+        // Get the original values from the form fields
+        const originalDate = "{{ weight_log.date.strftime('%Y-%m-%d') }}";
+        const originalWeight = "{{ weight_log.weight }}";
+
+        const form = document.getElementById("editForm");
+
+        form.addEventListener("submit", function(event) {
+            const currentDate = document.getElementById("date").value;
+            const currentWeight = document.getElementById("weight").value;
+
+            // Check if the values have changed
+            if (currentDate === originalDate && currentWeight === originalWeight) {
+                event.preventDefault(); // Prevent form submission
+                alert("No changes were made. Please update the weight to proceed."); // Show warning message
+            }
+        });
+    </script>
 </body>
 </html>

@@ -15,63 +15,90 @@
 
     body {
         font-family: 'Arial', sans-serif;
-        background-color: #f9f9f9;
+        background: linear-gradient(145deg, #f9f9f9, #e4e4e4);
         color: #333;
         padding: 40px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     h1 {
         text-align: center;
         font-size: 3em;
-        color: #4caf50;
+        color: #039be5;
         margin-bottom: 40px;
         text-transform: uppercase;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .day-log {
         margin-bottom: 50px;
         background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .day-log:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
     }
 
     h2 {
-        font-size: 2em;
+        font-size: 1.5em;
         color: #00796b;
-        margin-bottom: 20px;
+        text-transform: capitalize;
+        letter-spacing: 1px;
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
         margin-bottom: 30px;
+        font-size: 1.1em;
+        border: 1px solid #ddd;
     }
 
     th {
         padding: 14px 16px;
         background-color: #039be5;
         color: white;
-        text-align: left;
-        font-size: 1.1em;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+        border: none;
+        border-left: 1px solid #ddd;
     }
 
     td {
         padding: 12px 16px;
         text-align: center;
-        border-bottom: 1px solid #ddd;
+        border:none;
         font-size: 1em;
         color: #555;
     }
 
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
+    tr:not(:last-child) td {
+        border-right: 1px solid #ddd; /* Add right border after second column except for the last row */
+    }
+    tr:last-child td{
+        border-right: 1px solid #ddd; /* Add right border after second column except for the last row */
+    }
+
+    td:last-child{
+        border-left: 1px solid #ddd;
     }
 
     tr:hover {
         background-color: #e3f2fd;
+    }
+
+    table tr:last-child {
+        font-weight: bold;
+        border: 1px solid #ddd;
+
     }
 
     td a {
@@ -80,7 +107,7 @@
         padding: 6px 12px;
         border-radius: 4px;
         color: #4caf50;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     td a#delete {
@@ -89,10 +116,12 @@
 
     td a:hover {
         background-color: #e8f5e8;
+        color: #388e3c;
     }
 
     td a#delete:hover {
         background-color: #ffebee;
+        color: #c62828;
     }
 
     h3 {
@@ -102,24 +131,29 @@
         text-align: left;
     }
 
-    .totals {
+    .totals td {
         font-weight: bold;
-        color: #00796b;
-        background-color: #e0f2f1;
-        padding: 12px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        font-size: 1.1em;
     }
 
+    .totals td:first-child {
+        color: #00796b;
+    }
+
+    .totals td {
+        color: #d32f2f;
+    }
 </style>
 <body>
     <h1>Daily Food Consumption Log</h1>
 
     {% for day_log in daily_logs %}
         <div class="day-log">
-            <h2>{{ day_log.date }}</h2>
             <table>
                 <thead>
+                    <tr>
+                        <td colspan="8"><h2>{{ day_log.date }}</h2></td>
+                    </tr>
                     <tr>
                         <th>Food Item</th>
                         <th>Quantity</th>
@@ -147,14 +181,31 @@
                             </td>
                         </tr>
                     {% endfor %}
+                    <tr class="totals">
+                        <td colspan="2">Total</td>
+                        <td style="color: {% if day_log.total_protein > 70 %} green {% else %} red {% endif %};">
+                            {{ day_log.total_protein }}
+                        </td>
+                        <td style="color: {% if day_log.total_sugar > 25 %} red {% else %} green {% endif %};">
+                            {{ day_log.total_sugar }}
+                        </td>
+                        <td style="color: {% if day_log.total_fat > 40 %} red {% else %} green {% endif %};">
+                            {{ day_log.total_fat }}
+                        </td>
+                        <td style="color: {% if day_log.total_carbs > 175 %} red {% else %} green {% endif %};">
+                            {{ day_log.total_carbs }}
+                        </td>
+                        <td style="color: {% if day_log.total_calories > 1600 %} red {% else %} green {% endif %};">
+                            {{ day_log.total_calories }}
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    
                 </tbody>
             </table>
-            <div class="totals">
-                <h3>Total Calories for {{ day_log.date }}: {{ day_log.total_calories }}</h3>
-                <h3>Total Protein for {{ day_log.date }}: {{ day_log.total_protein }}</h3>
-            </div>
         </div>
     {% endfor %}
-    
 </body>
 </html>

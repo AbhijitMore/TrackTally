@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Numeric
 from datetime import datetime
 import os
 
@@ -27,6 +28,11 @@ class FoodItem(db.Model):
 
     def __repr__(self):
         return f"<FoodItem {self.food_item}>"
+    
+@app.route('/food_items')
+def food_items():
+    food_items = FoodItem.query.all()
+    return render_template('food_items.html', food_items=food_items)
 
 class DailyLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,6 +55,15 @@ def parse_quantity(quantity_str):
     # Remove non-numeric characters (such as 'g', 'nos', etc.)
     numeric_value = ''.join(filter(str.isdigit, quantity_str))
     return float(numeric_value)
+
+
+class WeightLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
+    weight = db.Column(Numeric(10, 3), nullable=False)
+
+    def __repr__(self):
+        return f"<WeightLog {self.date} - {self.weight}>"
 
 # Create the tables in the database
 with app.app_context():
@@ -95,13 +110,14 @@ def add_food_item():
         db.session.commit()
 
         flash('Food item added successfully!', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('food_items'))
 
     return render_template('add_food_item.html')
 
 @app.route('/log_food_item', methods=['GET', 'POST'])
 def log_food_item():
     food_items = FoodItem.query.all()
+    food_items = sorted(food_items, key=lambda x: x.food_item)
     if request.method == 'POST':
         food_item_id = request.form['food_item']
         quantity_consumed = request.form['quantity_consumed']
@@ -120,11 +136,11 @@ def log_food_item():
 
         quantity_ratio = round(parse_quantity(quantity_consumed) / parse_quantity(selected_food_item.quantity), 2)
         
-        protein_consumed = selected_food_item.protein * quantity_ratio
-        sugars_consumed = selected_food_item.sugars * quantity_ratio
-        fats_consumed = selected_food_item.fats * quantity_ratio
-        carbs_consumed = selected_food_item.carbs * quantity_ratio
-        total_calories = selected_food_item.kcal * quantity_ratio
+        protein_consumed = round(selected_food_item.protein * quantity_ratio,2)
+        sugars_consumed = round(selected_food_item.sugars * quantity_ratio, 2)
+        fats_consumed = round(selected_food_item.fats * quantity_ratio, 2)
+        carbs_consumed = round(selected_food_item.carbs * quantity_ratio,2)
+        total_calories = round(selected_food_item.kcal * quantity_ratio, 2)
 
         new_log = DailyLog(
             food_item_id=food_item_id, # type: ignore
@@ -183,21 +199,122 @@ def view_log():
     # Group logs by date
     daily_logs = {}
     for log in logs:
-        log_date = log.date
+        log_date = log.date.strftime("%d %B %Y")
         if log_date not in daily_logs:
-            daily_logs[log_date] = {'logs': [], 'total_calories': 0, 'total_protein': 0}
+            daily_logs[log_date] = {'logs': [], 'total_protein': 0, 'total_sugar': 0,'total_fat': 0, 'total_carbs': 0,'total_calories': 0}
         
         daily_logs[log_date]['logs'].append(log)
-        daily_logs[log_date]['total_calories'] += log.total_calories
         daily_logs[log_date]['total_protein'] += log.protein_consumed
+        daily_logs[log_date]['total_sugar'] += log.sugars_consumed
+        daily_logs[log_date]['total_fat'] += log.fats_consumed
+        daily_logs[log_date]['total_carbs'] += log.carbs_consumed
+        daily_logs[log_date]['total_calories'] += log.total_calories
     
     # Convert to a list to pass to the template (sorting by date)
     daily_logs = [
-        {'date': date, 'logs': data['logs'], 'total_calories': data['total_calories'], 'total_protein': data['total_protein']}
+        {'date': date, 'logs': data['logs'], 'total_calories': round(data['total_calories'],2), 'total_protein': round(data['total_protein'],2), 'total_sugar': round(data['total_sugar'], 2), 'total_fat': round(data['total_fat'],2), 'total_carbs': round(data['total_carbs'], 2), }
         for date, data in sorted(daily_logs.items())
     ]
     
     return render_template('view_log.html', daily_logs=daily_logs)
+
+# Route for logging daily weight
+from datetime import datetime
+
+@app.route('/log_weight', methods=['GET', 'POST'])
+def log_weight():
+    if request.method == 'POST':
+        weight = float(request.form['weight'])
+        date = request.form['date']
+        
+        try:
+            # Parse the date, ensuring it’s in the correct format
+            date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            flash('Invalid date format. Please use YYYY-MM-DD.', 'error')
+            return redirect(url_for('log_weight'))
+
+        # Debugging: Print the received date and weight
+        print(f"Received weight: {weight}, Date: {date_obj}")
+
+        # Check if a weight entry already exists for the given date (ignoring time part)
+        existing_log = WeightLog.query.filter(WeightLog.date == date_obj).first()
+
+        if existing_log:
+            # If an entry exists, update the weight and show a warning
+            print(f"Existing log found: {existing_log.weight} on {existing_log.date}")
+            existing_log.weight = weight
+            db.session.commit()
+            flash('Weight for this date already existed. It has been updated.', 'warning')
+        else:
+            # If no entry exists, add a new one
+            print("No existing log found. Creating new log.")
+            new_weight_log = WeightLog(weight=weight, date=date_obj) # type: ignore
+            db.session.add(new_weight_log)
+            db.session.commit()
+            flash('Weight logged successfully!', 'success')
+
+        return redirect(url_for('view_weights'))
+
+    return render_template('log_weight.html')
+
+# Route for viewing past weight logs with pagination
+@app.route('/view_weights', methods=['GET'])
+def view_weights():
+    page = request.args.get('page', 1, type=int)  # Get current page from query parameters, default to 1
+    per_page = 5  # Number of logs to show per page
+    
+    # Query WeightLog and paginate
+    weight_logs = WeightLog.query.order_by(WeightLog.date.desc()).paginate(page=page, per_page=per_page)
+    
+    return render_template('view_weights.html', weight_logs=weight_logs)
+
+@app.route('/edit_weight/<int:id>', methods=['GET', 'POST'])
+def edit_weight(id):
+    weight_log = WeightLog.query.get_or_404(id)
+
+    if request.method == 'POST':
+        try:
+            # Print the original weight for debugging
+            print(weight_log.date)
+
+            # Get data from the form
+            weight_log.date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()  # Ensure the date is in the correct format
+            weight_log.weight = float(request.form['weight'])  # Ensure weight is a float
+            
+            print(weight_log.date)
+
+            # Print the updated weight for debugging
+            print(weight_log.weight)
+
+            # Commit the changes to the database
+            db.session.commit()
+
+            # Flash a success message
+            flash('Weight log updated successfully!', 'success')
+
+            # Redirect to the view weights page
+            return redirect(url_for('view_weights'))
+        except ValueError:
+            # Handle invalid weight or date format
+            flash('Invalid input. Please check the form values and try again.', 'danger')
+
+    return render_template('edit_weight.html', weight_log=weight_log)
+
+# Route to delete a weight log
+@app.route('/delete_weight/<int:id>', methods=['GET'])
+def delete_weight(id):
+    weight_log = WeightLog.query.get_or_404(id)
+
+    try:
+        db.session.delete(weight_log)
+        db.session.commit()
+        flash('Weight log deleted successfully!', 'success')
+    except:
+        db.session.rollback()
+        flash('There was an issue deleting the weight log.', 'danger')
+
+    return redirect(url_for('view_weights'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
