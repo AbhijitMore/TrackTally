@@ -102,6 +102,7 @@
             
             <label for="quantity_consumed">Amount Consumed (in grams or servings):</label>
             <input type="text" name="quantity_consumed" value="{{ log.quantity_consumed }}" required class="input-field">
+            <input type="text" name="unit" value="{{ log.unit }}" class="input-field" disabled>
             
             <button type="submit" class="submit-btn">Update Log</button>
         </form>

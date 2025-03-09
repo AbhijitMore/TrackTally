@@ -32,6 +32,7 @@ class FoodItem(db.Model):
 @app.route('/food_items')
 def food_items():
     food_items = FoodItem.query.all()
+    food_items = sorted(food_items, key=lambda x: x.food_item)
     return render_template('food_items.html', food_items=food_items)
 
 class DailyLog(db.Model):
@@ -39,6 +40,7 @@ class DailyLog(db.Model):
     date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
     food_item_id = db.Column(db.Integer, db.ForeignKey('food_item.id'), nullable=False)
     quantity_consumed = db.Column(db.String(50), nullable=False)
+    unit = db.Column(db.String(20), nullable=False)
     protein_consumed = db.Column(db.Float, nullable=False)
     sugars_consumed = db.Column(db.Float, nullable=False)
     fats_consumed = db.Column(db.Float, nullable=False)
@@ -70,24 +72,24 @@ with app.app_context():
     db.create_all()
 
 # Seed the food items into the database (if not already present)
-def seed_food_items():
-    food_items = [
-        {"food_item": "Egg", "quantity": "1", "unit": "Nos", "protein": 6, "sugars": 0.6, "fats": 5, "carbs": 0.6, "kcal": 75},
-        {"food_item": "Soya Chunks", "quantity": "50", "unit": "gm", "protein": 20, "sugars": 0, "fats": 0.4, "carbs": 17, "kcal": 170},
-        # Add other food items similarly...
-    ]
+# def seed_food_items():
+#     food_items = [
+#         {"food_item": "Egg", "quantity": "1", "unit": "Nos", "protein": 6, "sugars": 0.6, "fats": 5, "carbs": 0.6, "kcal": 75},
+#         {"food_item": "Soya Chunks", "quantity": "50", "unit": "gm", "protein": 20, "sugars": 0, "fats": 0.4, "carbs": 17, "kcal": 170},
+#         # Add other food items similarly...
+#     ]
 
-    # Insert food items if they don't already exist
-    for food in food_items:
-        if not FoodItem.query.filter_by(food_item=food['food_item']).first():
-            new_food_item = FoodItem(**food)
-            db.session.add(new_food_item)
+#     # Insert food items if they don't already exist
+#     for food in food_items:
+#         if not FoodItem.query.filter_by(food_item=food['food_item']).first():
+#             new_food_item = FoodItem(**food)
+#             db.session.add(new_food_item)
 
-    db.session.commit()
+#     db.session.commit()
 
 # Seed the data
-with app.app_context():
-    seed_food_items()
+# with app.app_context():
+#     seed_food_items()
 
 @app.route('/')
 def index():
@@ -121,6 +123,7 @@ def log_food_item():
     if request.method == 'POST':
         food_item_id = request.form['food_item']
         quantity_consumed = request.form['quantity_consumed']
+        unit = request.form['unit']
         date = request.form['date']
         
         try:
@@ -145,6 +148,7 @@ def log_food_item():
         new_log = DailyLog(
             food_item_id=food_item_id, # type: ignore
             quantity_consumed=quantity_consumed,# type: ignore
+            unit = unit, # type: ignore
             date=date_obj,# type: ignore
             protein_consumed=protein_consumed,# type: ignore
             sugars_consumed=sugars_consumed,# type: ignore

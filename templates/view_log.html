@@ -157,6 +157,7 @@
                     <tr>
                         <th>Food Item</th>
                         <th>Quantity</th>
+                        <th>Unit</th>
                         <th>Protein (g)</th>
                         <th>Sugars (g)</th>
                         <th>Fats (g)</th>
@@ -170,6 +171,7 @@
                         <tr>
                             <td>{{ log.food_item.food_item }}</td>
                             <td>{{ log.quantity_consumed }}</td>
+                            <td>{{ log.unit }}</td>
                             <td>{{ log.protein_consumed }}</td>
                             <td>{{ log.sugars_consumed }}</td>
                             <td>{{ log.fats_consumed }}</td>
@@ -182,11 +184,11 @@
                         </tr>
                     {% endfor %}
                     <tr class="totals">
-                        <td colspan="2">Total</td>
+                        <td colspan="3">Total</td>
                         <td style="color: {% if day_log.total_protein > 70 %} green {% else %} red {% endif %};">
                             {{ day_log.total_protein }}
                         </td>
-                        <td style="color: {% if day_log.total_sugar > 25 %} red {% else %} green {% endif %};">
+                        <td style="color: {% if day_log.total_sugar > 30 %} red {% else %} green {% endif %};">
                             {{ day_log.total_sugar }}
                         </td>
                         <td style="color: {% if day_log.total_fat > 40 %} red {% else %} green {% endif %};">
