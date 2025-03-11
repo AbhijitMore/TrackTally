@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Numeric
 from datetime import datetime
 import os
+import pytz
 
 app = Flask(__name__)
 
@@ -37,6 +38,7 @@ def food_items():
 
 class DailyLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False, default=lambda: datetime.now(pytz.timezone('Asia/Kolkata')).date())
     date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
     food_item_id = db.Column(db.Integer, db.ForeignKey('food_item.id'), nullable=False)
     quantity_consumed = db.Column(db.String(50), nullable=False)
