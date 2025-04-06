@@ -219,7 +219,7 @@ def view_log():
     # Convert to a list to pass to the template (sorting by date)
     daily_logs = [
         {'date': date, 'logs': data['logs'], 'total_calories': round(data['total_calories'],2), 'total_protein': round(data['total_protein'],2), 'total_sugar': round(data['total_sugar'], 2), 'total_fat': round(data['total_fat'],2), 'total_carbs': round(data['total_carbs'], 2), }
-        for date, data in sorted(daily_logs.items())
+        for date, data in sorted(daily_logs.items(), key=lambda x: datetime.strptime(x[0], '%d %B %Y'), reverse=True)
     ]
     
     return render_template('view_log.html', daily_logs=daily_logs)
@@ -268,7 +268,7 @@ def log_weight():
 @app.route('/view_weights', methods=['GET'])
 def view_weights():
     page = request.args.get('page', 1, type=int)  # Get current page from query parameters, default to 1
-    per_page = 5  # Number of logs to show per page
+    per_page = 7  # Number of logs to show per page
     
     # Query WeightLog and paginate
     weight_logs = WeightLog.query.order_by(WeightLog.date.desc()).paginate(page=page, per_page=per_page)
